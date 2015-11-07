@@ -1,0 +1,78 @@
+.atistoptoolbar input { display:inline-block; }
+
+[atis-hbar] {
+    width: 100%;
+    text-align: right;
+    display: inline-block;
+    z-index: 10000;
+    visibility:hidden;
+}
+[atis-hbar] i { margin-right: 10px;}
+[hbar-section] {
+    display: inherit;
+    margin: 0px 10px;
+    text-align: left;
+    cursor: pointer;
+}
+[hbar-overflow] {
+    display: none;
+    height: 0px;
+    width: 32px;
+    overflow: visible;
+}
+[hbar-overflow] > i {
+    background-color: #333333;
+    text-align: center;
+    width: 32px;
+    cursor: pointer;
+    line-height: inherit;
+    font-size: 12px;
+}
+[hbar-overflow-container]  {
+    display: none;
+    float: right;
+    background-color: #333333;
+    border-radius: 0px 0px 0px 3px;
+    border-style: none none solid solid;
+    border-width: 0px 0px 1px 1px;
+    border-color: #000000;
+    position: relative;
+}
+[hbar-overflow-container] [hbar-section] {
+    display: none;
+}
+
+[atis-hbar] {
+    background-color: black;
+    color: white;
+}
+
+/* REMOVE THESE STYLES */
+body {
+    padding: 0;
+    margin: 0;
+}
+
+[hbar-section] {
+    height: 40px;
+    line-height: 40px;
+}
+
+.testit {
+    background-color: black;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+}
+
+[hbar-section], .testit {
+    -webkit-transition: all 300ms ease-out;
+    -moz-transition: all 300ms ease-out;
+    -ms-transition: all 300ms ease-out;
+    -o-transition: all 300ms ease-out;
+    transition: all 300ms ease-out;
+}
+
+[hbar-section]:hover, .testit:hover {
+    color: lightskyblue;
+}

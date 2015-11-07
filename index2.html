@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="atis.module">
+<head>
+    <meta charset="UTF-8">
+    <title>Coding Examples</title>
+    <link rel="stylesheet" href="atis-hbar.css"/>
+    <style>
+        .wrapper {
+            margin-top: 40p;x
+        }
+    </style>
+</head>
+<body ng-controller="MainController as main">
+    <div atis-hbar="">
+        <div hbar-section="0"><div>Test1</div></div>
+        <div hbar-section="1"><div>Test2</div></div>
+        <div hbar-section="2"><div>Test3</div></div>
+        <div hbar-section="3"><div>Test4</div></div>
+        <div hbar-section="4"><div>Test5</div></div>
+        <div hbar-section="5"><div>Test6</div></div>
+        <div hbar-section="6"><div>Test7</div></div>
+        <div hbar-section="7"><div>Test8</div></div>
+        <div hbar-section="8"><div>Test9</div></div>
+        <div hbar-section="9"><div>Test10</div></div>
+        <div hbar-section="10"><div>Test11</div></div>
+        <div hbar-section="11"><div>Test12</div></div>
+        <div hbar-section="12"><div>Test13</div></div>
+        <div hbar-overflow="">
+            <div hbar-overflow-container="">
+                <div hbar-section="7">Test8 Overflowed</div>
+                <div hbar-section="8">Test9 Overflowed</div>
+                <div hbar-section="9">Test10 Overflowed</div>
+                <div hbar-section="10">Test11 Overflowed</div>
+                <div hbar-section="11">Test12 Overflowed</div>
+                <div hbar-section="12">Test13 Overflowed</div>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper">
+        <button ng-click="main.testEventCancel()">Test Cancel Event</button>
+    </div>
+
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript">
+        angular.module('atis.module', [])
+                .controller('MainController', function() {
+                    var main = this;
+
+                    main.testEventCancel = function() {
+                        alert('Button clicked!');
+                    };
+                });
+    </script>
+    <script type="text/javascript" src="atis-hbar-service.js"></script>
+    <script type="text/javascript" src="atis-hbar.js"></script>
+</body>
+</html>

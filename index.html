@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="atis.module">
+<head>
+    <meta charset="UTF-8">
+    <title>Coding Examples</title>
+    <link rel="stylesheet" href="atis-vbar.css"/>
+    <style>
+        .main-content-wrapper {
+            position: fixed;
+            left: 300px;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body ng-controller="MainController as main">
+    <div atis-vbar="testHbar" default="home" animate="true">
+        <div vbar-card="home">
+            <div vbar-section="Home">
+                <div vbar-link="preferences" animate="true">Preferences</div>
+                <div vbar-link="tools" animate="true">Tools</div>
+                <div vbar-item="logout">Logout</div>
+            </div>
+        </div>
+
+        <div vbar-card="preferences">
+            <div vbar-section="Preferences">
+                <div vbar-back="" vbar-link="home" animate="true"></div>
+            </div>
+        </div>
+
+        <div vbar-card="tools">
+            <div vbar-section="Tools">
+                <div vbar-back="" vbar-link="home" animate="true"></div>
+                <div vbar-link="submenu1" animate="true">Submenu 1</div>
+            </div>
+        </div>
+
+        <div vbar-card="submenu1">
+            <div vbar-section="Sub Menu 1">
+                <div vbar-back="" vbar-link="tools" animate="true"></div>
+                <div vbar-link="submenu2" animate="true">Sub Menu 2</div>
+            </div>
+        </div>
+
+        <div vbar-card="submenu2">
+            <div vbar-section="Sub Menu 2">
+                <div vbar-back="" vbar-link="submenu1" animate="true"></div>
+                <div vbar-link="submenu3" animate="true">Sub Menu 3</div>
+            </div>
+        </div>
+
+        <div vbar-card="submenu3">
+            <div vbar-section="Sub Menu 3">
+                <div vbar-back="" vbar-link="submenu2" animate="true"></div>
+                <div vbar-link="submenu4" animate="true">Sub Menu 4</div>
+            </div>
+        </div>
+
+        <div vbar-card="submenu4">
+            <div vbar-section="Sub Menu 4">
+                <div vbar-back="" vbar-link="submenu3" animate="true"></div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content-wrapper">
+        <button ng-click="main.toggleMenu();">Toggle Menu</button>
+        <div id="block1" class="block">Some random text</div>
+    </div>
+
+    <script type="text/javascript" src="Transition.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript">
+
+        function Simple(el) {
+            function __Simple(el) {
+                this.element = el;
+                this.style = el.style;
+            }
+
+            __Simple.prototype.constructor = Simple;
+            __Simple.prototype.getStyle = getStyle;
+            __Simple.prototype.getElement = getElement;
+            __Simple.prototype.hide = hide;
+
+            return new __Simple(el);
+
+            function getStyle() {
+                return this.style;
+            }
+
+            function getElement() {
+                return this.element;
+            }
+
+            function hide(duration) {
+                var transition = Transition(this.element);
+
+                transition.duration(duration).opacity(0);
+            }
+        }
+
+        setTimeout(function() {
+            var simple = Simple(document.getElementById('block1'));
+
+            simple.getStyle();
+            simple.getElement();
+            simple.hide(1000);
+        }, 2000);
+
+        angular.module('atis.module', [])
+                .controller('MainController', function(VbarService) {
+                    var main = this;
+
+                    main.toggleMenu = toggleMenu;
+
+                    function toggleMenu() {
+                        var menu = VbarService.get('testHbar'),
+                            wrapper = Transition(document.querySelector('.main-content-wrapper')),
+                            endPoint = menu.isOpen ? -300 : 0;
+
+                        wrapper.duration(300).timingFunction('ease-out').move(endPoint, 0, 0);
+                        //wrapper.duration(500).bezier(.61,-1.5,.38,1.5).move(endPoint, 0, 0);
+                        menu.toggle(300);
+                    }
+                });
+    </script>
+    <script type="text/javascript" src="atis-vbar-service.js"></script>
+    <script type="text/javascript" src="atis-vbar.js"></script>
+</body>
+</html>
