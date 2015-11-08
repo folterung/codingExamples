@@ -87,8 +87,27 @@
 
             //Setup the hbar for the first time.
             var hbar = this.hbar;
+            var transition = Transition(hbar.element[0]);
             checkOverflowItems(hbar, hbar.overflowVisible());
+            transition.duration(0).opacity(0);
             hbar.element.css("visibility", "visible"); //Show the hbar once it sets up for the first time so that you don't see weird behavior.
+
+            setTimeout(function() {
+                transition.timingFunction('ease-out').duration(300).opacity(1).matrix(1, 0, 0.5, 1, 0, 0);
+            }, 0);
+
+            setTimeout(function() {
+                transition.opacity(0.5).matrix(1, 0, -0.5, 1, 0, 0);
+            }, 300);
+
+            setTimeout(function() {
+                transition.opacity(1).matrix(1, 0, 0, 1, 0, 0);
+            }, 600);
+
+            setTimeout(function() {
+                transition.element.removeAttribute('style');
+                hbar.element.css("visibility", "visible");
+            }, 900);
 
             //Refresh the hbar on window resize.
             $(window).resize(function() { refresh(); });

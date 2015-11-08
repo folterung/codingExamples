@@ -1,19 +1,31 @@
-function Transition(el) {
-    function __Transition(el) {
+(function(win) {
+    'use strict';
+
+    function Transition(el) {
         this.element = el;
         this.style = el.style;
     }
 
-    __Transition.prototype.fade = fade;
-    __Transition.prototype.move = move;
-    __Transition.prototype.opacity = opacity;
-    __Transition.prototype.duration = duration;
-    __Transition.prototype.timingFunction = timingFunction;
-    __Transition.prototype.index = index;
-    __Transition.prototype.translate = translate;
-    __Transition.prototype.bezier = bezier;
+    function __Transition(el) {
+        return new Transition(el);
+    }
 
-    return new __Transition(el);
+    Transition.prototype.fade = fade;
+    Transition.prototype.move = move;
+    Transition.prototype.opacity = opacity;
+    Transition.prototype.duration = duration;
+    Transition.prototype.timingFunction = timingFunction;
+    Transition.prototype.index = index;
+    Transition.prototype.translate = translate;
+    Transition.prototype.bezier = bezier;
+    Transition.prototype.matrix = matrix;
+    Transition.prototype.animations = animations;
+
+    win.Transition = __Transition;
+
+    if(win.angular !== undefined) {
+        win.angular.Transition = win.Transition;
+    }
 
     function fade(endVal) {
         this.opacity(endVal);
@@ -76,4 +88,37 @@ function Transition(el) {
 
         return this;
     }
-}
+
+    function matrix(w, r, s, h, x, y) {
+        var matVal = 'matrix('+ w +', '+ r +', '+ s +', '+ h +', '+ x +', '+ y +')';
+        var originVal = '0 0';
+
+        this.style.webkitTransformOrigin = originVal;
+        this.style.mozTransformOrigin = originVal;
+        this.style.oTransformOrigin = originVal;
+        this.style.transformOrigin = originVal;
+
+        this.style.webkitTransform = matVal;
+        this.style.mozTransform = matVal;
+        this.style.oTransform = matVal;
+        this.style.transform = matVal;
+    }
+
+    function animations() {
+        var transition = this,
+            animations = {
+                reveal: reveal
+            },
+            originalDuration = transition.style.transitionDuration.replace('ms', '');
+
+        function reveal(delay) {
+            transition.duration(0).opacity(0);
+
+            setTimeout(function() {
+                transition.duration(originalDuration).opacity(1);
+            }, delay);
+        }
+
+        return animations;
+    }
+})(window);

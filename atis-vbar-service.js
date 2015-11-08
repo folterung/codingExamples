@@ -170,7 +170,7 @@
             });
 
             for(var i = 0; i < backLinks.length; i++) {
-                $(backLinks[i]).prepend("<i vbar-back-icon='' class='icon_fa-chevron-left'></i> Back");
+                $(backLinks[i]).prepend("<i vbar-back-icon='' class='glyphicon glyphicon-chevron-left'></i> Back");
             }
 
             for(var i = 0; i < cards.length; i++) {
@@ -188,9 +188,9 @@
                     classToAdd = arrow === "right" ? "vbar-link-icon-forward=''" : "vbar-link-icon-backward=''";
 
                 if(arrow === "right") {
-                    curLink.append("<i "+classToAdd+" class='icon_fa-chevron-"+arrow+"'></i>&nbsp;");
+                    curLink.append("<i "+classToAdd+" class='glyphicon glyphicon-chevron-"+arrow+"'></i>&nbsp;");
                 } else if(arrow === "left") {
-                    curLink.prepend("<i "+classToAdd+" class='icon_fa-chevron-"+arrow+"'></i>&nbsp;");
+                    curLink.prepend("<i "+classToAdd+" class='glyphicon glyphicon-chevron-"+arrow+"'></i>&nbsp;");
                 }
 
                 curLink.on('click', function(e) {
@@ -258,7 +258,7 @@
                         vbar.vm.$root.$apply();
                     }, 0);
                 });
-                
+
                 return defer.promise;
             },
             close: function(duration) {
@@ -272,7 +272,7 @@
                         vbar.vm.$root.$apply();
                     }, 0);
                 });
-                
+
                 return defer.promise;
             },
             toggle: function(duration) {
@@ -306,8 +306,6 @@
                     transition = Transition(card[0]),
                     duration = animate ? 250 : 0,
                     endPoint = isBack ? -300 : 300;
-
-                console.log(transition);
 
                 if(prevCardId === name || vbar.animating) { return; }
 
