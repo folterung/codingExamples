@@ -71,7 +71,8 @@
     </div>
     <div class="main-content-wrapper">
         <button ng-click="main.toggleMenu();">Toggle Menu</button>
-        <div id="block1" class="block">Some random text</div>
+        <button ng-click="main.toggleMsg();">Toggle Message</button>
+        <div id="block1" class="block a">Some random text</div>
         <ul>
             <li>
                 <label>Bleh 1</label>
@@ -122,19 +123,150 @@
     <script type="text/javascript" src="TransitionAnimations.js"></script>
     <script type="text/javascript">
         angular.module('atis.module', [])
-                .controller('MainController', function(VbarService) {
+                .provider('Store', function() {
+                    function Store() {
+
+                    }
+
+                    Store.prototype.put = put;
+                    Store.prototype.get = get;
+                    Store.prototype.remove = remove;
+                    Store.prototype.state = state;
+
+                    this.$get = [function() {
+                        return Store;
+                    }];
+
+                    function state(obj) {
+                        for(var prop in obj) {
+                            this[prop] = obj[prop];
+                        }
+                    }
+
+                    function put(keys, value) {
+                        if(keys) {
+                            var keys = keys.split('.');
+                            _find.call(this, keys, true)[keys.slice(-1)] = value;
+                        } else {
+                            this[keys] = value;
+                        }
+                    }
+
+                    function get(keys) {
+                        var keys = keys.split('.');
+                        return _find.call(this, keys)[keys.slice(-1)];
+                    }
+
+                    function remove(keys) {
+                        var keys = keys.split('.');
+                        delete _find.call(this, keys)[keys.slice(-1)];
+                    }
+
+                    function _find(array, put) {
+                        var value = this;
+
+                        for(var i = 0; i < array.length; i++) {
+                            if(i+1 === array.length) { break; }
+                            if(put && value[array[i]] === undefined) {
+                                value[array[i]] = {};
+                            }
+
+                            value = value[array[i]];
+                        }
+
+                        return value;
+                    }
+                })
+                .controller('MainController', function(VbarService, Store) {
                     var main = this;
+
+                    var MAIN_STORE = 'MainStore';
+                    var store = new Store();
+
+                    store.state({
+                        testNesting: {
+                            nestOne: {
+                                nestTwo: {
+                                    name: 'Nest Two',
+                                    nestThree: {
+                                        name: 'Nest Three',
+                                        nestFour: {
+                                            name: 'Nest Four'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        labels: document.querySelectorAll('li>label'),
+                        divs: document.querySelectorAll('li>div'),
+                        testElement: document.querySelector('#block1')
+                    });
+
+                    console.log(store);
+                    console.log(store.get('testNesting.nestOne.nestTwo.nestThree.nestFour'));
+                    store.put('testNesting.nestOne.name', 'Added name to nestOne');
+                    console.log(store.get('testNesting.nestOne.name'));
+                    store.remove('testNesting.nestOne.name');
+                    console.log(store.get('testNesting.nestOne.name'));
+                    store.put('something.random.goes.here', 'Woot!');
 
                     main.toggleMenu = toggleMenu;
 
-                    var transition = Transition(document.getElementById('block1'));
-                    transition.duration(250).timingFunction('ease-out').animations().reveal(0);
+//                    var transition = Transition(document.getElementById('block1'));
+//                    transition.duration(250).timingFunction('ease-out').animations().reveal(0);
 
                     var lis = document.querySelectorAll('li>label');
                     var divs = document.querySelectorAll('li>div');
+                    var testElement = document.querySelector('#block1');
 
                     Transition.stagger(divs, 150, 50, 500, 'ease', -100, 0, 0)
                     Transition.stagger(lis, 0, 50, 300, 'ease', -100, 0, 0);
+
+                    main.msgVisible = true;
+
+                    addClass(testElement, 'a-in');
+
+                    setTimeout(function() {
+                        addClass(testElement, 'a-active');
+                    }, 0);
+
+                    main.toggleMsg = function() {
+                        if(main.msgVisible) {
+                            main.msgVisible = false;
+                            cleanupAll(testElement, 'a');
+                            addClass(testElement, 'a-out');
+
+                            setTimeout(function() {
+                                addClass(testElement, 'a-active');
+                            }, 0);
+                        } else {
+                            main.msgVisible = true;
+                            cleanupAll(testElement, 'a');
+                            addClass(testElement, 'a-in');
+
+                            setTimeout(function() {
+                                addClass(testElement, 'a-active');
+                            }, 0);
+                            addClass(testElement, 'a-active');
+
+//                            preventAnimation(testElement, 'a-in');
+//                            addClass(testElement, 'a-in');
+//
+//                            clearInlineStyles(testElement);
+//                            addClass(testElement, 'a-active');
+//
+//                            duration = getDuration(testElement);
+//                            setDelay(testElement, duration);
+//                            addClass(testElement, 'slideRight');
+//
+//                            duration = getDuration(testElement);
+//
+//                            setTimeout(function() {
+//                                clearInlineStyles(testElement);
+//                                removeClass(testElement, 'slideRight');
+//                            }, getDurationMS(duration));
+                        }
+                    };
 
                     function toggleMenu() {
                         var menu = VbarService.get('testHbar'),

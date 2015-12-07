@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Events</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <style>
+        header {
+            font-size: 1.5rem;
+            padding: 20px 0 0 20px;
+        }
+
+        [kw-header-text-number] i {
+            color: red;
+            margin-left: 5px;
+        }
+
+        [kw-header-text-number] i:before {
+            text-shadow: 0 0 1px black;
+        }
+
+        .spin {
+            -webkit-animation: 0.5s ease 0s 1 alternate spin-animation;
+            -o-animation: 0.5s ease 0s 1 alternate spin-animation;
+            animation: 0.5s ease 0s 1 alternate spin-animation;
+        }
+
+        .grow {
+            -webkit-animation: 0.5s ease-out 0s 1 alternate grow-animation;
+            -o-animation: 0.5s ease-out 0s 1 alternate grow-animation;
+            animation: 0.5s ease-out 0s 1 alternate grow-animation;
+        }
+        
+        .wiggle {
+            -webkit-animation-name: wiggle-animation;
+            -moz-animation-name: wiggle-animation;
+            -o-animation-name: wiggle-animation;
+            animation-name: wiggle-animation;
+
+            -webkit-animation-duration: 1.5s;
+            -moz-animation-duration: 1.5s;
+            -o-animation-duration: 1.5s;
+            animation-duration: 1.5s;
+
+            -webkit-animation-iteration-count: 1;
+            -moz-animation-iteration-count: 1;
+            -o-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes spin-animation {
+            from {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            to {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes grow-animation {
+            0% {
+                -webkit-transform: scale(1, 1);
+                -moz-transform: scale(1, 1);
+                -ms-transform: scale(1, 1);
+                -o-transform: scale(1, 1);
+                transform: scale(1, 1);
+            }
+
+            25% {
+                -webkit-transform: scale(2, 2);
+                -moz-transform: scale(2, 2);
+                -ms-transform: scale(2, 2);
+                -o-transform: scale(2, 2);
+                transform: scale(2, 2);
+            }
+
+            50% {
+                -webkit-transform: scale(0.5, 0.5);
+                -moz-transform: scale(0.5, 0.5);
+                -ms-transform: scale(0.5, 0.5);
+                -o-transform: scale(0.5, 0.5);
+                transform: scale(0.5, 0.5);
+            }
+            
+            75% {
+                -webkit-transform: scale(1.5, 1.5);
+                -moz-transform: scale(1.5, 1.5);
+                -ms-transform: scale(1.5, 1.5);
+                -o-transform: scale(1.5, 1.5);
+                transform: scale(1.5, 1.5);
+            }
+            
+            100% {
+                -webkit-transform: scale(1, 1);
+                -moz-transform: scale(1, 1);
+                -ms-transform: scale(1, 1);
+                -o-transform: scale(1, 1);
+                transform: scale(1, 1);
+            }
+        }
+
+        @keyframes wiggle-animation {
+            0% {
+                -webkit-transform: translateX(0);
+                -moz-transform: translateX(0);
+                -ms-transform: translateX(0);
+                -o-transform: translateX(0);
+                transform: translateX(0);
+            }
+
+            25% {
+                -webkit-transform: translateX(20px);
+                -moz-transform: translateX(20px);
+                -ms-transform: translateX(20px);
+                -o-transform: translateX(20px);
+                transform: translateX(20px);
+            }
+
+            50% {
+                -webkit-transform: translateX(-10px);
+                -moz-transform: translateX(-10px);
+                -ms-transform: translateX(-10px);
+                -o-transform: translateX(-10px);
+                transform: translateX(-10px);
+            }
+
+            75% {
+                -webkit-transform: translateX(10px);
+                -moz-transform: translateX(10px);
+                -ms-transform: translateX(10px);
+                -o-transform: translateX(10px);
+                transform: translateX(10px);
+            }
+
+            100% {
+                -webkit-transform: translateX(0);
+                -moz-transform: translateX(0);
+                -ms-transform: translateX(0);
+                -o-transform: translateX(0);
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<header role="banner" onclick="warn();">
+    <span kw-header-text></span>
+    <span kw-header-text-number></span>
+</header>
+<script type="text/javascript" src="event.js"></script>
+<script>
+
+    var eventHandler = (function() {
+        var e = kw.Event;
+        var HEADER_TEXT_EVENT = 'update header text';
+        var HEADER_TEXT_ELEMENT = 'span[kw-header-text]';
+        var HEADER_NUMBER_EVENT = 'update header number';
+        var HEADER_NUMBER_ELEMENT = 'span[kw-header-text-number]';
+        var HEADER_ICON_ELEMENT = 'span[kw-header-text-number] i';
+        var SPIN_EVENT = 'spin';
+
+        var dispatcher = {
+            header: {
+                text: function(text) {
+                    e.dispatch(HEADER_TEXT_EVENT, text);
+                },
+                number: function(number) {
+                    e.dispatch(HEADER_NUMBER_EVENT, number);
+                },
+                iconSpin: function() {
+                    e.dispatch(SPIN_EVENT);
+                }
+            }
+        };
+
+        e.listen(HEADER_TEXT_EVENT, function(text) {
+            EL(HEADER_TEXT_ELEMENT).innerHTML = text;
+        });
+
+        e.listen(HEADER_NUMBER_EVENT, function(headerNumber) {
+            EL(HEADER_NUMBER_ELEMENT).innerHTML = headerNumber;
+        });
+
+        e.listen(HEADER_NUMBER_EVENT, function() {
+            var i = EL(HEADER_ICON_ELEMENT);
+
+            addClass(i, 'grow');
+            e.bind(i, 'AnimationEnd', _listener);
+
+            function _listener() {
+                removeClass(i, 'grow');
+                e.unbind(i, 'AnimationEnd', _listener);
+            }
+        });
+
+        e.listen(SPIN_EVENT, function() {
+            var i = EL(HEADER_ICON_ELEMENT);
+
+            addClass(i, 'spin');
+            e.bind(i, 'AnimationEnd', _listener);
+
+            function _listener() {
+                removeClass(i, 'spin');
+                e.unbind(i, 'AnimationEnd', _listener);
+            }
+        });
+
+        return dispatcher;
+    })();
+
+    var counter = 1;
+
+    eventHandler.header.text('Header text');
+
+    function warn() {
+        eventHandler.header.number(counter + ' <i onmouseover="spinMe();" class="fa fa-exclamation-triangle"></i>');
+        counter++;
+    }
+
+    function spinMe() {
+        eventHandler.header.iconSpin();
+    }
+
+    function EL(selector) {
+        return document.querySelector(selector);
+    }
+
+    function addClass(el, className) {
+        if(el.className.length > 0) { el.className += ' '; }
+        el.className += className;
+    }
+
+    function removeClass(el, className) {
+        var regEx = new RegExp('( )?'+className, 'g');
+        el.className = el.className.replace(regEx, '');
+    }
+</script>
+</body>
+</html>

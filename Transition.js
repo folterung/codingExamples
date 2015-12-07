@@ -122,3 +122,98 @@
         return animations;
     }
 })(window);
+
+var IN = '-in',
+    OUT = '-out',
+    ACTIVE = '-active';
+
+function applyCSSAnimations(el, classes) {
+    for(var i = 0; i < classes.length; i++) {
+        el.className += ' ' + classes[i];
+    }
+}
+
+function cleanupAll(el, animationClass) {
+    var identifiers = getClassIndentifiers(animationClass),
+        space = ' ',
+        empty = '';
+
+    for(var i = 0; i < identifiers.length; i++) {
+        el.className = el.className.replace(space + identifiers[i], empty);
+        el.className = el.className.replace(identifiers[i], empty);
+    }
+
+    el.removeAttribute('style');
+}
+
+function removeClass(el, animationClass) {
+    var space = ' ',
+        empty = '';
+
+    el.className = el.className.replace(space + animationClass, empty);
+    el.className = el.className.replace(animationClass, empty);
+}
+
+function addClass(el, animationClass) {
+    if(el.className.indexOf(animationClass) === -1) {
+        el.className += ' ' + animationClass;
+    }
+}
+
+function getClassIndentifiers(animationClass) {
+    return [
+        animationClass + IN,
+        animationClass + OUT,
+        animationClass + ACTIVE
+    ];
+}
+
+function getDuration(el) {
+    var style = window.getComputedStyle(el);
+
+    return style.getPropertyValue('transition-duration');
+}
+
+function grabDuraton(el, animationClass) {
+    var duration;
+
+    addClass(el, animationClass);
+    duration = getDuration(el);
+    removeClass(el, animationClass);
+
+    return duration;
+}
+
+function getDurationMS(durationVal) {
+    return durationVal.replace('s', '') * 1000;
+}
+
+function preventAnimation(el, animationClass) {
+    setDelay(el, '-' + getDuration(el, animationClass));
+}
+
+function clearInlineStyles(el) {
+    el.removeAttribute('style', '');
+}
+
+function applyCSS(el, prop, val) {
+    var prefixes = [
+            'webkit',
+            'moz',
+            'ms',
+            'o'
+        ],
+        capitalizedProp = prop.charAt(0).toUpperCase() + prop.substring(1);
+
+    for(var i = 0; i < prefixes.length; i++) {
+        var propName = prefixes[i] + capitalizedProp;
+
+        el.style[propName] = val;
+    }
+
+    el.style[prop] = val;
+}
+
+function setDelay(el, delay) {
+    applyCSS(el, 'transitionDelay', delay);
+}
