@@ -5,9 +5,13 @@
     <title>Custom Events</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <style>
+        body {
+            height: 100%;
+        }
+
         header {
             font-size: 1.5rem;
-            padding: 20px 0 0 20px;
+            padding: 20px 0 0 0;
         }
 
         [kw-header-text-number] i {
@@ -46,6 +50,92 @@
             -moz-animation-iteration-count: 1;
             -o-animation-iteration-count: 1;
             animation-iteration-count: 1;
+        }
+
+        .card-container {
+            text-align: center;
+            margin-top: 20px;
+            perspective: 500px;
+        }
+
+        .card {
+            height: 125px;
+            width: 47%;
+            box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.25), 2px 0 2px 0 rgba(0, 0, 0, 0.25), -2px 0 2px 0 rgba(0, 0, 0, 0.25);
+            background-color: #286090;
+            color: #fff;
+            display: inline-block;
+
+            -webkit-transition: transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+            -moz-transition: transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+            -ms-transition: transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+            -o-transition: transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+            transition: transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+        }
+
+        .card-backdrop {
+            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            filter: alpha(opacity=0);
+
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        .card-backdrop.active {
+            opacity: 1;
+            filter: alpha(opacity=100);
+        }
+
+        .card.clone {
+            z-index: 5000;
+
+            -webkit-transition: top 0.3s ease-out 0.15s,
+                                margin-top 0.3s ease-out 0.15s,
+                                left 0.3s ease-out 0.15s,
+                                margin-left 0.3s ease-out 0.15s,
+                                transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550) 0.3s;
+
+            -moz-transition: top 0.3s ease-out 0.15s,
+                                margin-top 0.3s ease-out 0.15s,
+                                left 0.3s ease-out 0.15s,
+                                margin-left 0.3s ease-out 0.15s,
+                                transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550) 0.3s;
+
+            -ms-transition: top 0.3s ease-out 0.15s,
+                            margin-top 0.3s ease-out 0.15s,
+                            left 0.3s ease-out 0.15s,
+                            margin-left 0.3s ease-out 0.15s,
+                            transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550) 0.3s;
+
+            -o-transition: top 0.3s ease-out 0.15s,
+                            margin-top 0.3s ease-out 0.15s,
+                            left 0.3s ease-out 0.15s,
+                            margin-left 0.3s ease-out 0.15s,
+                            transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550) 0.3s;
+
+            transition: top 0.3s ease-out 0.15s,
+                        margin-top 0.3s ease-out 0.15s,
+                        left 0.3s ease-out 0.15s,
+                        margin-left 0.3s ease-out 0.15s,
+                        transform 0.5s cubic-bezier(0.680, -0.550, 0.265, 1.550) 0.3s;
+        }
+
+        .card.inactive {
+            -webkit-transform: scale(0.5, 0.5);
+            -moz-transform: scale(0.5, 0.5);
+            -ms-transform: scale(0.5, 0.5);
+            -o-transform: scale(0.5, 0.5);
+            transform: scale(0.5, 0.5);
         }
 
         @keyframes spin-animation {
@@ -156,6 +246,12 @@
     <span kw-header-text></span>
     <span kw-header-text-number></span>
 </header>
+<div class="card-container">
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+</div>
 <script type="text/javascript" src="event.js"></script>
 <script>
 
@@ -218,6 +314,82 @@
     })();
 
     var counter = 1;
+    var cards = document.getElementsByClassName('card');
+    var card;
+    var margins;
+
+    for(var i = 0; i < cards.length; i++) {
+        card = cards[i];
+
+        card.addEventListener('click', function(e) {
+            var target = e.target;
+            var cards = document.getElementsByClassName('card');
+            var clone;
+            var clonedCard;
+            var backdrop;
+
+            for(var k = 0; k < cards.length; k++) {
+                if(cards[k] === target) {
+                    clone = cards[k].cloneNode(true);
+                    clonedCard = cards[k];
+
+                    clonedCard.className = 'card active';
+                } else {
+                    cards[k].className = 'card inactive';
+                }
+            }
+
+            backdrop = document.createElement('div');
+            backdrop.className = 'card-backdrop';
+
+            clonedCard.style.opacity = 0;
+            clonedCard.style.filter = 'alpha(opacity=0)';
+
+            document.body.appendChild(backdrop);
+            document.body.appendChild(clone);
+
+            clone.style.position = 'fixed';
+            clone.style.top = clonedCard.offsetTop + 'px';
+            clone.style.left = clonedCard.offsetLeft + 'px';
+
+            clone.className = 'card clone';
+
+            setTimeout(function() {
+                _showBackdrop();
+                _move();
+                _grow();
+            }, 0);
+
+            function _showBackdrop() {
+                backdrop.className = 'card-backdrop active';
+            }
+
+            function _move() {
+                var docHeight = document.body.clientHeight;
+                var docWidth = document.body.clientWidth;
+                var cloneHeight = clone.offsetHeight;
+                var cloneWidth = clone.offsetWidth;
+                var initLeft = docWidth/2 - cloneWidth/2;
+                var initTop = docHeight/2 - cloneHeight/2;
+                var leftVal = _getPercent(initLeft, docWidth);
+                var topVal = _getPercent(initTop, docHeight);
+
+
+                clone.style.top = topVal + '%';
+                clone.style.left = leftVal + '%';
+
+                _grow();
+            }
+
+            function _grow() {
+                clone.style.transform = 'scale(1.5, 1.5)';
+            }
+
+            function _getPercent(low, high) {
+                return (low/high) * 100;
+            }
+        });
+    }
 
     eventHandler.header.text('Header text');
 
